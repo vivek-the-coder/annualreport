@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-manrope), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-serif: "Playfair Display", "Georgia", serif;
+
+  /* Primary – KPGU deep navy (K in wordmark + “Vadodara”) */
+  --color-navy-50:  #f4f6fd;
+  --color-navy-100: #e8edfa;
+  --color-navy-200: #d0daf5;
+  --color-navy-300: #a6b9eb;
+  --color-navy-400: #7894e1;
+  --color-navy-500: #4f76d6;
+  --color-navy-600: #3b61c4;
+  --color-navy-700: #2a4fb0;
+  --color-navy-800: #1a3e95;
+  --color-navy-900: #0B2B76;
+  --color-navy-950: #071c51;
+
+  /* KPGU crimson (crest + P in wordmark + tagline) */
+  --color-kp-red-50:  #fdf2f3;
+  --color-kp-red-100: #fce2e5;
+  --color-kp-red-200: #f9c5cb;
+  --color-kp-red-300: #f29aa4;
+  --color-kp-red-400: #e65e6e;
+  --color-kp-red-500: #d63447;
+  --color-kp-red-600: #C8102E;
+  --color-kp-red-700: #a40d25;
+  --color-kp-red-800: #7f0a1d;
+  --color-kp-red-900: #550613;
+
+  /* KPGU gold (G in wordmark) */
+  --color-gold-100: #fdf3d8;
+  --color-gold-300: #f7d58b;
+  --color-gold-500: #F5A623;
+  --color-gold-600: #d48a10;
+  --color-gold-700: #a86b08;
+
+  /* KPGU green (U in wordmark) */
+  --color-kp-green-50:  #ecfdf3;
+  --color-kp-green-100: #d1fae0;
+  --color-kp-green-300: #86efac;
+  --color-kp-green-500: #22c55e;
+  --color-kp-green-600: #16a34a;
+  --color-kp-green-700: #00843D;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv11";
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-navy-600);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--color-kp-red-100);
+  color: var(--color-kp-red-900);
+}
+
+/* Animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes progress-grow {
+  from { width: 0%; }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@keyframes check-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  70% { transform: scale(1.12); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-fade-up { animation: fade-up 0.5s ease both; }
+.animate-fade-in { animation: fade-in 0.4s ease both; }
+.animate-scale-in { animation: scale-in 0.3s ease both; }
+.animate-progress { animation: progress-grow 1.1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+.animate-check-pop { animation: check-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.delay-75 { animation-delay: 75ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-225 { animation-delay: 225ms; }
+.delay-300 { animation-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Cards & shadows */
+.card {
+  background: white;
+  border: 1px solid rgb(226 232 240);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(11 43 118 / 0.05), 0 4px 16px rgb(11 43 118 / 0.05);
+}
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgb(11 43 118 / 0.06), 0 12px 28px rgb(11 43 118 / 0.10);
+  border-color: rgb(200 211 230);
+}
+
+.thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225);
+  border-radius: 999px;
+}
+
+/* A4 page */
+.a4-page {
+  aspect-ratio: 210 / 297;
+  background: white;
+  box-shadow: 0 1px 3px rgb(11 43 118 / 0.12), 0 16px 40px rgb(11 43 118 / 0.16);
+}
+
+/* KPGU stripe used in the cover / dividers */
+.kpgu-stripe {
+  background: linear-gradient(
+    to right,
+    #0B2B76 0 12%,
+    #00843D 12% 24%,
+    #F5A623 24% 36%,
+    #e6781e 36% 48%,
+    #C8102E 48% 66%,
+    #f0b88e 66% 76%,
+    #1a2b5e 76% 88%,
+    #00a3b4 88% 94%,
+    #5b1f75 94% 100%
+  );
+}
