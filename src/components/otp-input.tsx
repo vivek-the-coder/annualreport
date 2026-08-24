@@ -67,7 +67,7 @@ export function OtpInput({
 
   return (
     <div
-      className="flex justify-between gap-2"
+      className="flex gap-1.5 sm:gap-2"
       role="group"
       aria-label={`Enter the ${length}-digit verification code`}
     >
@@ -90,7 +90,7 @@ export function OtpInput({
           onPaste={onPaste}
           onFocus={(e) => e.target.select()}
           className={cn(
-            "h-13 h-14 w-full rounded-xl border text-center font-display text-xl font-extrabold text-navy-900 transition",
+            "h-12 min-w-0 flex-1 rounded-xl border text-center font-display text-lg font-extrabold text-navy-900 transition sm:h-14 sm:text-xl",
             "focus:border-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-100",
             invalid ? "border-rose-300 bg-rose-50" : "border-slate-200 bg-white",
             disabled && "opacity-60"

@@ -34,7 +34,7 @@ export function SimpleBar({
   data,
   xKey,
   bars,
-  height = 260,
+  height = 220,
   horizontal = false,
 }: {
   data: Record<string, string | number>[];
@@ -44,22 +44,23 @@ export function SimpleBar({
   horizontal?: boolean;
 }) {
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <div className="h-[200px] w-full min-w-0 sm:h-[240px] md:h-[260px]" style={height !== 220 ? { height } : undefined}>
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={data}
         layout={horizontal ? "vertical" : "horizontal"}
-        margin={{ top: 4, right: 8, left: horizontal ? 30 : -12, bottom: 0 }}
+        margin={{ top: 4, right: 8, left: horizontal ? 8 : -16, bottom: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#eef2f7" horizontal={!horizontal} vertical={horizontal} />
         {horizontal ? (
           <>
-            <XAxis type="number" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-            <YAxis type="category" dataKey={xKey} tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} width={110} />
+            <XAxis type="number" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+            <YAxis type="category" dataKey={xKey} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={88} />
           </>
         ) : (
           <>
-            <XAxis dataKey={xKey} tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+            <XAxis dataKey={xKey} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+            <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={36} />
           </>
         )}
         <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(29,63,132,0.05)" }} />
@@ -75,6 +76,7 @@ export function SimpleBar({
         ))}
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -82,7 +84,7 @@ export function SimpleLine({
   data,
   xKey,
   lines,
-  height = 260,
+  height = 220,
 }: {
   data: Record<string, string | number>[];
   xKey: string;
@@ -90,11 +92,12 @@ export function SimpleLine({
   height?: number;
 }) {
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={data} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+    <div className="h-[200px] w-full min-w-0 sm:h-[240px] md:h-[260px]" style={height !== 220 ? { height } : undefined}>
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#eef2f7" vertical={false} />
-        <XAxis dataKey={xKey} tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} />
+        <XAxis dataKey={xKey} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
+        <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={36} />
         <Tooltip contentStyle={tooltipStyle} />
         {lines.map((l, i) => (
           <Line
@@ -110,6 +113,7 @@ export function SimpleLine({
         ))}
       </LineChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 

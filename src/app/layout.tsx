@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Inter, Manrope } from "next/font/google";
 import { AppProvider } from "@/lib/store";
@@ -13,10 +13,18 @@ export const metadata: Metadata = {
     "Collect departmental data, manage approvals, visualize institutional performance and generate a professional annual report from one centralized platform.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#0B2B76",
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
-      <body className="bg-slate-50 text-slate-900 antialiased">
+    <html lang="en" className={`${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
+      <body className="bg-slate-50 text-slate-900 antialiased" suppressHydrationWarning>
         <AppProvider>{children}</AppProvider>
       </body>
     </html>

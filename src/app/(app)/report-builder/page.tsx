@@ -45,10 +45,19 @@ export default function ReportBuilderPage() {
   const { toast } = useApp();
   const [state, setState] = useState<BuilderState>(DEFAULT_STATE);
   const [page, setPage] = useState(0);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.85);
   const [full, setFull] = useState(false);
   const [dragKey, setDragKey] = useState<string | null>(null);
   const [generating, setGenerating] = useState<number | null>(null);
+
+  // Prefer a slightly smaller default zoom on narrow screens.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const apply = () => setZoom(mq.matches ? 1 : 0.85);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   useEffect(() => {
     try {
@@ -231,11 +240,11 @@ export default function ReportBuilderPage() {
         </div>
       )}
 
-      <div className="grid gap-6 xl:grid-cols-[260px_1fr_280px]">
+      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-[260px_1fr_280px]">
         {/* Chapters */}
-        <div className="card h-fit p-4 xl:sticky xl:top-24">
+        <div className="card h-fit order-2 p-4 lg:order-1 xl:sticky xl:top-24">
           <h2 className="px-1 pb-3 text-xs font-extrabold uppercase tracking-widest text-slate-400">Chapters · drag to reorder</h2>
-          <ul className="space-y-1">
+          <ul className="scroll-x flex gap-2 lg:block lg:max-h-none lg:space-y-1 lg:overflow-visible xl:max-h-[70vh] xl:overflow-y-auto">
             {chapters.map((c, i) => (
               <li
                 key={c.key}
@@ -244,17 +253,17 @@ export default function ReportBuilderPage() {
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => onDropChapter(e, c.key)}
                 className={cn(
-                  "group flex items-center gap-2 rounded-xl border px-2.5 py-2 transition",
+                  "group flex shrink-0 items-center gap-2 rounded-xl border px-2.5 py-2 transition lg:w-full",
                   i === page ? "border-navy-200 bg-navy-50" : "border-transparent hover:border-slate-200 hover:bg-slate-50",
                   dragKey === c.key && "opacity-40"
                 )}
               >
-                <GripVertical className="h-4 w-4 shrink-0 cursor-grab text-slate-300" aria-hidden />
+                <GripVertical className="hidden h-4 w-4 shrink-0 cursor-grab text-slate-300 sm:block" aria-hidden />
                 <button onClick={() => setPage(i)} className="min-w-0 flex-1 text-left">
-                  <span className={cn("block truncate text-xs font-bold", i === page ? "text-navy-900" : "text-slate-600")}>{c.label}</span>
+                  <span className={cn("block whitespace-nowrap text-xs font-bold lg:truncate lg:whitespace-normal", i === page ? "text-navy-900" : "text-slate-600")}>{c.label}</span>
                   <span className="text-[10px] text-slate-400">{c.pages} {c.pages === 1 ? "page" : "pages"}</span>
                 </button>
-                <span className="flex flex-col opacity-0 transition group-hover:opacity-100">
+                <span className="hidden flex-col opacity-0 transition group-hover:opacity-100 sm:flex">
                   <button aria-label={`Move ${c.label} up`} onClick={() => move(c.key, -1)} className="rounded p-0.5 text-slate-400 hover:bg-slate-200 hover:text-navy-700"><ChevronUp className="h-3.5 w-3.5" aria-hidden /></button>
                   <button aria-label={`Move ${c.label} down`} onClick={() => move(c.key, 1)} className="rounded p-0.5 text-slate-400 hover:bg-slate-200 hover:text-navy-700"><ChevronDown className="h-3.5 w-3.5" aria-hidden /></button>
                 </span>
@@ -264,28 +273,32 @@ export default function ReportBuilderPage() {
         </div>
 
         {/* Preview */}
-        <div className={cn(full && "fixed inset-0 z-[80] overflow-auto bg-navy-950/95 p-6 sm:p-12")}>
-          <div className={cn("card p-4 sm:p-6", full && "border-none bg-transparent shadow-none")}>
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className={cn("order-1 lg:order-2", full && "fixed inset-0 z-[80] overflow-auto bg-navy-950/95 p-4 sm:p-6 md:p-12")}>
+          <div className={cn("card p-3 sm:p-4 md:p-6", full && "border-none bg-transparent shadow-none")}>
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <p className={cn("text-sm font-bold", full ? "text-white" : "text-navy-900")}>
                 Live Preview <span className={cn("ml-2 text-xs font-semibold", full ? "text-white/50" : "text-slate-400")}>Page {pageNumber} / {totalPages}</span>
               </p>
-              <div className="flex items-center gap-1.5">
-                <button aria-label="Previous chapter" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className={cn(btn.secondary, "!px-3 !py-1.5 text-xs")}>Previous</button>
-                <button aria-label="Next chapter" onClick={() => setPage((p) => Math.min(chapters.length - 1, p + 1))} disabled={page === chapters.length - 1} className={cn(btn.secondary, "!px-3 !py-1.5 text-xs")}>Next</button>
-                <button aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(0.6, z - 0.1))} className={cn(btn.secondary, "!p-2")}><ZoomOut className="h-4 w-4" aria-hidden /></button>
-                <button aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(1.4, z + 0.1))} className={cn(btn.secondary, "!p-2")}><ZoomIn className="h-4 w-4" aria-hidden /></button>
-                <button aria-label={full ? "Exit fullscreen" : "Fullscreen"} onClick={() => setFull((f) => !f)} className={cn(btn.secondary, "!p-2")}>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <button aria-label="Previous chapter" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className={cn(btn.secondary, "!min-h-9 !px-3 !py-1.5 text-xs")}>Previous</button>
+                <button aria-label="Next chapter" onClick={() => setPage((p) => Math.min(chapters.length - 1, p + 1))} disabled={page === chapters.length - 1} className={cn(btn.secondary, "!min-h-9 !px-3 !py-1.5 text-xs")}>Next</button>
+                <button aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(0.55, z - 0.1))} className={cn(btn.secondary, "!min-h-9 !p-2")}><ZoomOut className="h-4 w-4" aria-hidden /></button>
+                <button aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(1.4, z + 0.1))} className={cn(btn.secondary, "!min-h-9 !p-2")}><ZoomIn className="h-4 w-4" aria-hidden /></button>
+                <button aria-label={full ? "Exit fullscreen" : "Fullscreen"} onClick={() => setFull((f) => !f)} className={cn(btn.secondary, "!min-h-9 !p-2")}>
                   {full ? <Minimize2 className="h-4 w-4" aria-hidden /> : <Maximize2 className="h-4 w-4" aria-hidden />}
                 </button>
               </div>
             </div>
-            <div className="overflow-auto pb-4">{preview}</div>
+            <div className="overflow-x-auto pb-4">
+              <div className="flex min-h-[280px] justify-center sm:min-h-[360px]">
+                {preview}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Settings */}
-        <div className="card h-fit space-y-6 p-5 xl:sticky xl:top-24">
+        <div className="card order-3 h-fit space-y-6 p-5 lg:col-span-2 xl:col-span-1 xl:sticky xl:top-24">
           <div>
             <h2 className="text-xs font-extrabold uppercase tracking-widest text-slate-400">Theme</h2>
             <div className="mt-3 grid grid-cols-2 gap-2">

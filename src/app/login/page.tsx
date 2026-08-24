@@ -151,13 +151,13 @@ export default function LoginPage() {
       </div>
 
       {/* Right login card */}
-      <div className="flex items-center justify-center bg-slate-50 px-4 py-10 sm:px-8">
+      <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4 py-8 sm:px-8 sm:py-10">
         <div className="w-full max-w-md">
-          <div className="mb-8 lg:hidden">
+          <div className="mb-6 lg:hidden">
             <Link href="/" aria-label="Back to homepage"><Logo /></Link>
           </div>
 
-          <div className="card animate-fade-up p-7 sm:p-8">
+          <div className="card animate-fade-up p-5 sm:p-7 md:p-8">
             <h2 className="font-display text-2xl font-extrabold tracking-tight text-navy-900">Sign in</h2>
             <p className="mt-1.5 text-sm text-slate-500">
               {method === "email"

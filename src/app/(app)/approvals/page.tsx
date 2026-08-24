@@ -104,12 +104,12 @@ function ApprovalsInner() {
         />
 
         <div className="grid gap-6 lg:grid-cols-[220px_1fr_320px]">
-          {/* Section nav */}
+          {/* Section nav — horizontal scroll on mobile */}
           <nav aria-label="Department sections" className="card h-fit p-3 lg:sticky lg:top-24">
             <p className="px-2 pb-2 pt-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Sections</p>
-            <ul className="space-y-0.5">
+            <ul className="scroll-x flex gap-1 lg:block lg:space-y-0.5 lg:overflow-visible">
               {deptSubs.map((s) => (
-                <li key={s.id}>
+                <li key={s.id} className="shrink-0 lg:w-full">
                   <button
                     onClick={() => router.push(`/approvals?open=${s.id}`)}
                     aria-current={s.id === sub.id ? "true" : undefined}
@@ -119,7 +119,7 @@ function ApprovalsInner() {
                     )}
                   >
                     <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", s.status === "approved" ? "bg-emerald-500" : s.status === "changes_requested" ? "bg-rose-500" : "bg-amber-400")} aria-hidden />
-                    <span className="truncate">{sectionLabel(s.section)}</span>
+                    <span className="whitespace-nowrap lg:truncate">{sectionLabel(s.section)}</span>
                   </button>
                 </li>
               ))}
@@ -127,7 +127,7 @@ function ApprovalsInner() {
           </nav>
 
           {/* Submitted content */}
-          <div className="card p-6">
+          <div className="card p-4 sm:p-6">
             <h2 className="font-display text-lg font-bold text-navy-900">Submitted Content</h2>
             <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-slate-700">{sub.summary ?? "No content submitted yet."}</p>
             {dept && (
@@ -241,7 +241,7 @@ function ApprovalsInner() {
             : "Track the approval status of your department’s sections."
         }
       />
-      <div role="tablist" aria-label="Filter approvals" className="mb-5 flex flex-wrap gap-1.5">
+      <div role="tablist" aria-label="Filter approvals" className="scroll-x mb-5 flex flex-nowrap gap-1.5 pb-1 sm:flex-wrap">
         {TABS.map((t) => {
           const count =
             t.key === "all"
@@ -254,7 +254,7 @@ function ApprovalsInner() {
               aria-selected={tab === t.key}
               onClick={() => setTab(t.key)}
               className={cn(
-                "rounded-full border px-4 py-2 text-xs font-bold transition",
+                "shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold transition sm:px-4",
                 tab === t.key ? "border-navy-800 bg-navy-900 text-white" : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
               )}
             >
@@ -268,7 +268,28 @@ function ApprovalsInner() {
       {rows.length === 0 ? (
         <EmptyState title="Nothing here yet" body="Submissions with this status will appear here as departments progress." />
       ) : (
-        <div className="card overflow-hidden">
+        <>
+          <ul className="space-y-3 md:hidden">
+            {rows.map((s) => {
+              const dept = data.departments.find((d) => d.id === s.departmentId);
+              return (
+                <li key={s.id} className="card p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-navy-900">{dept?.name}</p>
+                      <p className="mt-0.5 text-xs text-slate-500">{sectionLabel(s.section)}</p>
+                    </div>
+                    <StatusBadge status={s.status} />
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">{s.submittedBy} · {timeAgo(s.updatedAt)}</p>
+                  <button onClick={() => router.push(`/approvals?open=${s.id}`)} className={cn(btn.secondary, "mt-3 w-full text-xs")}>
+                    {isReviewer ? (s.status === "approved" ? "View" : "Review") : "Open"}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="card hidden overflow-hidden md:block">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
@@ -304,7 +325,8 @@ function ApprovalsInner() {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

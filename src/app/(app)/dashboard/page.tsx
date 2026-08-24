@@ -174,9 +174,9 @@ export default function DashboardPage() {
           <span className="text-sm font-bold text-navy-700">{overall}% Complete</span>
         </div>
         <ProgressBar value={overall} className="mt-4 h-3.5" barClassName="bg-gradient-to-r from-navy-800 to-navy-500" label="Annual report progress" />
-        <ol className="mt-6 grid gap-4 sm:grid-cols-5" aria-label="Report milestones">
+        <ol className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-4" aria-label="Report milestones">
           {MILESTONES.map((m) => (
-            <li key={m.label} className="flex items-center gap-2.5 sm:flex-col sm:text-center">
+            <li key={m.label} className="flex items-center gap-2.5 lg:flex-col lg:text-center">
               <span
                 aria-hidden
                 className={cn(
@@ -186,7 +186,7 @@ export default function DashboardPage() {
                   m.state === "todo" && "border-slate-200 bg-white text-slate-300"
                 )}
               >
-                {m.state === "done" ? <CheckCircle2 className="h-4.5 w-4.5 h-5 w-5" /> : m.state === "active" ? "●" : "○"}
+                {m.state === "done" ? <CheckCircle2 className="h-5 w-5" /> : m.state === "active" ? "●" : "○"}
               </span>
               <div>
                 <p className={cn("text-xs font-bold", m.state === "todo" ? "text-slate-400" : "text-navy-900")}>{m.label}</p>
@@ -202,14 +202,35 @@ export default function DashboardPage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.7fr_1fr]">
         {/* Department table */}
         <div className="card animate-fade-up delay-225 overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <h2 className="font-display text-lg font-bold text-navy-900">Department Submission Status</h2>
-            <Link href="/departments" className="text-xs font-bold text-navy-600 hover:text-navy-800">View all</Link>
+          <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-4 sm:px-6">
+            <h2 className="font-display text-base font-bold text-navy-900 sm:text-lg">Department Submission Status</h2>
+            <Link href="/departments" className="shrink-0 text-xs font-bold text-navy-600 hover:text-navy-800">View all</Link>
           </div>
           {data.departments.length === 0 ? (
             <EmptyState title="No submissions yet." body="Once departments submit their information, it will appear here." action={<button className={btn.primary}>Invite Department</button>} />
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              <ul className="divide-y divide-slate-100 md:hidden">
+                {data.departments.slice(0, 8).map((d) => (
+                  <li key={d.id} className="px-4 py-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-navy-900">{d.name}</p>
+                        <p className="mt-0.5 text-xs text-slate-500">{timeAgo(d.updatedAt)}</p>
+                      </div>
+                      <StatusBadge status={d.status} />
+                    </div>
+                    <div className="mt-3 flex items-center gap-3">
+                      <ProgressBar value={d.completion} className="h-1.5 flex-1" animate={false} label={`${d.name} ${d.completion}%`} />
+                      <span className="text-xs font-bold text-navy-700">{d.completion}%</span>
+                    </div>
+                    <Link href="/approvals" className="mt-3 inline-block text-xs font-bold text-navy-600 hover:underline">
+                      {d.status === "approved" ? "View" : "Review"}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[620px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -241,7 +262,8 @@ export default function DashboardPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
         </div>
 
