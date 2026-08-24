@@ -390,7 +390,7 @@ export default function LandingPage() {
       <footer className="border-t border-slate-100 bg-slate-50/70">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
           <Logo />
-          <p className="text-xs text-slate-500">
+          <p className="text-center text-xs text-slate-500">
             © 2026 AnnualReport · Demo instance for {INSTITUTE.name}
           </p>
           <div className="flex gap-4 text-xs font-medium text-slate-500">
@@ -398,6 +398,19 @@ export default function LandingPage() {
             <a href="#how-it-works" className="hover:text-navy-700">Workflow</a>
             <Link href="/login" className="hover:text-navy-700">Sign In</Link>
           </div>
+        </div>
+        <div className="border-t border-slate-100/80">
+          <p className="px-4 py-3 text-center text-[11px] tracking-wide text-slate-400 sm:text-xs">
+            Developed by{" "}
+            <a
+              href="https://patelvivek.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-slate-500 underline-offset-2 transition hover:text-navy-700 hover:underline"
+            >
+              Vivek Patel
+            </a>
+          </p>
         </div>
       </footer>
     </div>
